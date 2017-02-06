@@ -17,52 +17,56 @@ class CalculatorViewController: UIViewController {
     
     private var displayValue: Double {
         get {
-            return Double(display.text!)!
+            guard let displayNumber = Double(display.text!) else {
+                return 0.0
+            }
+            return displayNumber
         }
         set {
-            display.text = String(describing: newValue)
+            display.text = brain.displayFormatter.string(for: newValue)
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     @IBAction func digitPressed(_ sender: UIButton)
     {
-        if let buttonValue = sender.currentTitle
+        guard let buttonValue = sender.currentTitle else
         {
-            if isInTheMiddleOfTyping
+            return
+        }
+        
+        if isInTheMiddleOfTyping
+        {
+            if !(buttonValue == "." && display.text?.range(of: ".") != nil)
             {
                 display.text = display.text! + buttonValue
             }
-            else
-            {
-                display.text = buttonValue
-            }
-            
-            if displayValue != 0.0 {
-                isInTheMiddleOfTyping = true
-            }
-            else {
-                isInTheMiddleOfTyping = false
-            }
+        }
+        else
+        {
+            display.text = buttonValue
+        }
+        
+        if display.text == "0" && buttonValue == "0" {
+            isInTheMiddleOfTyping = false
+        }
+        else {
+            isInTheMiddleOfTyping = true
         }
     }
     
     @IBAction func performOperation(_ sender: UIButton)
     {
-        if isInTheMiddleOfTyping {
+        if isInTheMiddleOfTyping
+        {
             brain.setOperand(displayValue)
             isInTheMiddleOfTyping = false
-            
-            if let operation = sender.currentTitle {
-                brain.perform(operation: operation)
-            }
-            
-            displayValue = brain.result
         }
+        
+        if let operation = sender.currentTitle {
+            brain.perform(operation: operation)
+        }
+        
+        displayValue = brain.result
     }
 }
 
