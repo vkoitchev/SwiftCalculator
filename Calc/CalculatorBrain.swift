@@ -12,6 +12,14 @@ class CalculatorBrain
 {
     private var accumulator = 0.0
     
+    public lazy var displayFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.alwaysShowsDecimalSeparator = false
+        formatter.maximumFractionDigits = 6
+        
+        return formatter
+    }()
+
     func setOperand(_ operand: Double)
     {
         accumulator = operand
@@ -57,10 +65,12 @@ class CalculatorBrain
             case .Equals:
                 executePendingBinaryOperation()
             case .Backspace:
-                let displayString = String(accumulator)
-                let truncatedText = displayString.substring(to: displayString.index(before: displayString.endIndex))
-                if let truncatedNumber = Double(truncatedText) {
-                    accumulator = truncatedNumber
+                if let displayString = displayFormatter.string(for:accumulator)
+                {
+                    let truncatedText = displayString.substring(to: displayString.index(before: displayString.endIndex))
+                    if let truncatedNumber = displayFormatter.number(from: truncatedText) {
+                        accumulator = truncatedNumber.doubleValue
+                    }
                 }
                 break
             case .ClearDisplay:

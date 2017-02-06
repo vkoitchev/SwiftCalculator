@@ -15,14 +15,6 @@ class CalculatorViewController: UIViewController {
     private var isInTheMiddleOfTyping = false
     private let brain = CalculatorBrain()
     
-    private lazy var displayFormatter: NumberFormatter = {
-            let formatter = NumberFormatter()
-            formatter.alwaysShowsDecimalSeparator = false
-            formatter.maximumFractionDigits = 6
-            
-            return formatter
-    }()
-    
     private var displayValue: Double {
         get {
             guard let displayNumber = Double(display.text!) else {
@@ -31,7 +23,7 @@ class CalculatorViewController: UIViewController {
             return displayNumber
         }
         set {
-            display.text = displayFormatter.string(for: newValue)
+            display.text = brain.displayFormatter.string(for: newValue)
         }
     }
     
