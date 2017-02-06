@@ -57,8 +57,11 @@ class CalculatorBrain
             case .Equals:
                 executePendingBinaryOperation()
             case .Backspace:
-//                let displayString = String(accumulator)
-//                let cutDisplay = displayString.substring(to: displayString.characters.count - 1)
+                let displayString = String(accumulator)
+                let truncatedText = displayString.substring(to: displayString.index(before: displayString.endIndex))
+                if let truncatedNumber = Double(truncatedText) {
+                    accumulator = truncatedNumber
+                }
                 break
             case .ClearDisplay:
                 accumulator = 0

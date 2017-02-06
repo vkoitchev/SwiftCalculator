@@ -24,15 +24,10 @@ class CalculatorViewController: UIViewController {
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
     @IBAction func digitPressed(_ sender: UIButton)
     {
         if let buttonValue = sender.currentTitle
-        {
+        {            
             if isInTheMiddleOfTyping
             {
                 display.text = display.text! + buttonValue
@@ -42,26 +37,40 @@ class CalculatorViewController: UIViewController {
                 display.text = buttonValue
             }
             
-            if displayValue != 0.0 {
-                isInTheMiddleOfTyping = true
+            if display.text == "0" {
+                isInTheMiddleOfTyping = false
             }
             else {
-                isInTheMiddleOfTyping = false
+                isInTheMiddleOfTyping = true
             }
         }
     }
     
     @IBAction func performOperation(_ sender: UIButton)
     {
-        if isInTheMiddleOfTyping {
+        if isInTheMiddleOfTyping
+        {
             brain.setOperand(displayValue)
             isInTheMiddleOfTyping = false
-            
-            if let operation = sender.currentTitle {
-                brain.perform(operation: operation)
-            }
-            
-            displayValue = brain.result
+        }
+        
+        if let operation = sender.currentTitle {
+            brain.perform(operation: operation)
+        }
+        
+        displayValue = brain.result
+    }
+    
+    @IBAction func addFloatingPointIfNeeded(_ sender: UIButton)
+    {
+        guard let currentDisplay = display.text else {
+            return
+        }
+        
+        if !currentDisplay.contains(".")
+        {
+            display.text = currentDisplay + "."
+            isInTheMiddleOfTyping = true
         }
     }
 }
