@@ -50,19 +50,19 @@ class CalculatorViewController: UIViewController {
             }
         }
     }
-
+    
     @IBAction func performOperation(_ sender: UIButton)
     {
         if isInTheMiddleOfTyping {
             brain.setOperand(displayValue)
             isInTheMiddleOfTyping = false
+            
+            if let operation = sender.currentTitle {
+                brain.perform(operation: operation)
+            }
+            
+            displayValue = brain.result
         }
-        
-        if let operation = sender.currentTitle {
-            brain.perform(operation: operation)
-        }
-        
-        displayValue = brain.result
     }
 }
 
